@@ -1,10 +1,11 @@
 ## Application Name
-task list application
+mantan list application
 
 ## Application Description
-this application can be used to remind us about what we have to do
+this application can be used to remind us about our exs
 
 ## Development tools
+- nodejs
 - postman
 - vscode
 
