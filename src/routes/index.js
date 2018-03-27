@@ -1,44 +1,50 @@
-const express = require('express')
+const express = require('express');
 const router = express.Router();
+const model = require('../model/mantan')();
 
-const model = require('../model/task')();
-
-router.get('/',(req, res)=>{
-   model.find({}, (err, task) =>{
+// READ
+router.get('/', (req, res) => {
+  model.find({}, function (err, mantans) {
     if (err) throw err;
-    res.render('index',{
-    title :'CRUD',
-    item: tasks
-    })
-}); 
+
+    res.render('index', {
+      title: 'Mantan list',
+      mantans
+    });
+  });
 });
 
-router.post('/add',(req, res) =>{
-    let.body = req.body;
-    body.status = false;
+// CREATE
+router.post('/add', (req, res, next) => {
+  let body = req.body;
+  body.status = false;
+  model.create(body, (err, mantan) => {
+    if(err) throw err;
+    res.redirect('/');
+  });
+});
 
-    model.create(body,(err, task) =>{
-        if (err) throw err;
-       res.redirect('/');
-    })
-})
+// UPDATE
+router.get('/turn/:id', (req, res, next) => {
+  let id = req.params.id;
+  model.findById(id, (err, mantan) => {
+    if (err) throw err;
+    mantan.status = !mantan.status;
+    mantan.save()
+      .then(() => res.redirect('/'));
+  });
+});
 
-router.get('/turn',(req,res)=>{
-    let id = req.params.id;
-    model.findById(id,(err, task) =>{
-        if(err) throw err;
-        task.status = !task.status;
-        task.save() 
-        .then(()=>res.redirect('/'))
-    })
-})
-router.get('/delete/:id',(req, res)=>{
- let id = req.params.id;
- model.remove({_id: id}, (err, task)=>{
-     if (err) throw err;
-     res.redirect('/')
+// DELETE
+router.get('/delete/:id', (req, res, next) => {
+  let id = req.params.id;
+  model.remove({_id: id}, (err, mantan) => {
+    if (err) throw err;
+    res.redirect('/');
+  });
+});
 
- })   
-})
+//EDIT
+
 
 module.exports = router;
